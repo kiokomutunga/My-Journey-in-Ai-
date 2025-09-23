@@ -7,7 +7,7 @@ def is_prime(num):
             return False
     return True
 
-# Ask user for a limit
+# input for a limit
 limit = int(input("Enter the last number you need the prime numbers to count to: "))
 
 print(f"The prime numbers up to {limit} are:")
