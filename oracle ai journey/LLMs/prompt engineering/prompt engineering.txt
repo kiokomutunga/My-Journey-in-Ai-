@@ -1,0 +1,53 @@
+Prompt engineering is the craft of designing inputs for large language models so they produce reliable, useful outputs. Think of prompts as a conversation spec: you set the role, supply context, give clear instructions, and constrain the answer format.
+
+Why it matters
+
+Models respond to what you ask—small phrasing changes can dramatically alter results.
+Good prompts reduce hallucinations, make outputs deterministic, and cut iteration time.
+Core components
+
+Role: tell the model who it should be (e.g., "You are an expert Python tutor").
+Goal: state the objective clearly (summarize, translate, refactor, etc.).
+Context: supply necessary facts, dataset snippets, or prior messages.                         
+How LLMs work
+
+- Tokens and embeddings: Text is split into tokens; each token maps to a numeric embedding the model processes.
+- Transformer core: Stacks of self-attention and feed-forward layers let the model learn contextual relationships across tokens.
+- Training: Models are first pretrained on large corpora to predict next tokens, then optionally fine-tuned on specialized data.
+- Context window: Models only see a fixed-length context; longer contexts require chunking or retrieval-augmented approaches.
+- Decoding strategies: Greedy, beam search, and sampling (temperature/top-k/top-p) control how outputs are generated.
+- Practical notes: Clear role/context, few-shot examples, and constrained output formats reduce errors and hallucinations.
+
+Python examples
+
+Hugging Face (local or hosted model):
+from transformers import pipeline
+
+generator = pipeline("text-generation", model="gpt2")
+result = generator(
+    "Give a one-sentence summary of how LLMs work:",
+    max_length=60,
+    do_sample=False
+)
+print(result[0]["generated_text"].strip())
+
+OpenAI chat-style request (requires openai library and API key):
+import openai
+
+openai.api_key = "YOUR_API_KEY"
+
+response = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": "You are a concise AI assistant."},
+        {"role": "user", "content": "Explain in two sentences how large language models work."}
+    ],
+    temperature=0.3,
+    max_tokens=150
+)
+print(response["choices"][0]["message"]["content"].strip())
+
+Tips for production
+- Validate outputs programmatically (sanity checks, schemas).
+- Use temperature=0 (or low) for deterministic results when needed.
+- Combine retrieval or tools for up-to-date or factual answers.
