@@ -1,0 +1,36 @@
+Prompting in LLMs — concise explanation
+
+- What prompting is
+    - Prompting is giving a model text (the prompt) that frames a task and context so the model generates a desired output. It does not change model weights; it guides behavior at inference time.
+
+- Types of prompts
+    - Simple prompt: a single instruction or question (e.g., "Summarize the paragraph below: ...").
+    - Few-shot prompt: include examples of input→output pairs to demonstrate the desired format or reasoning steps.
+    - System / instruction messages (chat models): high-level role or behavior instructions separated from user content (e.g., "You are a helpful assistant that answers concisely").
+    - Chain-of-thought prompts: ask the model to show intermediate reasoning steps (explicitly request reasoning or provide step-by-step examples).
+
+- Components of an effective prompt
+    - Clear goal: state the task and expected output format.
+    - Context: provide necessary background or data.
+    - Constraints: length limits, style, forbidden content, or output structure (JSON, bullet list).
+    - Examples: include 1–10 examples that illustrate edge cases and desired outputs.
+    - Temperature / sampling: lower temperatures for deterministic answers, higher for creative output.
+
+- Example prompts
+    - Simple: "Translate this sentence to French: 'How are you today?'"
+    - Few-shot: "Example 1: Q: What is 2+3? A: 5. Example 2: Q: What is 7-4? A: 3. Now: Q: What is 8+6? A:"
+    - Chain-of-thought: "Explain your reasoning step by step, then give the final answer."
+
+- Best practices
+    - Be explicit about format and constraints.
+    - Use examples for nontrivial formatting or reasoning.
+    - Keep prompts as short as possible while including necessary context.
+    - Validate outputs and guard against hallucinations by asking for sources or using verification steps.
+    - Avoid ambiguous language; test prompts on edge cases.
+
+- Limitations
+    - Prompting cannot teach fundamentally new capabilities beyond the model’s training.
+    - Sensitive to wording: small changes can produce large differences in output.
+    - Vulnerable to prompt injection in compositional systems; validate and sanitize inputs.
+
+Use prompting to steer the model quickly; use training/fine-tuning when you need consistent behavior across many queries or to embed new persistent knowledge.
