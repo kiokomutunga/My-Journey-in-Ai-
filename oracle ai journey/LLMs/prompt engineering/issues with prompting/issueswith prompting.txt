@@ -1,0 +1,66 @@
+Title: Issues with Prompting — concise checklist and fixes
+
+Common issues:
+1. Vague or underspecified goals
+    - Symptom: Output misses intent or is irrelevant.
+    - Fix: State goal explicitly, include desired format and examples.
+
+2. Ambiguous wording / assumptions
+    - Symptom: Model fills gaps with wrong assumptions.
+    - Fix: Define terms, constraints, and required outputs.
+
+3. Missing context or data
+    - Symptom: Model can't use external facts or previous steps.
+    - Fix: Include relevant context or provide memory/state between turns.
+
+4. Conflicting instructions
+    - Symptom: Model oscillates or produces inconsistent results.
+    - Fix: Remove contradictions; prioritize instructions by clarity ("Primary:" / "Secondary:").
+
+5. No output format specified
+    - Symptom: Hard-to-parse responses.
+    - Fix: Provide exact format, templates, delimiters, and examples.
+
+6. Too long or overloaded prompts
+    - Symptom: Model ignores later instructions or truncates context.
+    - Fix: Shorten, modularize tasks, or use multi-step prompting.
+
+7. Lack of examples (few-shot)
+    - Symptom: Low-quality or variable outputs.
+    - Fix: Provide 2–5 high-quality examples (input → desired output).
+
+8. Prompt injection / adversarial content
+    - Symptom: Model follows unsafe or unexpected instructions embedded in input.
+    - Fix: Sanitize user input, isolate instructions from data, validate outputs.
+
+9. Overreliance on single prompt (no iterative refinement)
+    - Symptom: One-shot failures.
+    - Fix: Use drafts, critique-and-rewrite loops, or chain-of-thought prompts.
+
+10. Hallucinations and factual errors
+     - Symptom: Confident but incorrect information.
+     - Fix: Request citations, cross-check with authoritative sources, use retrieval augmentation.
+
+11. Poor handling of edge cases
+     - Symptom: Unexpected inputs break responses.
+     - Fix: Include edge-case examples and explicit fallback behavior.
+
+12. No evaluation or automated checks
+     - Symptom: Hard to measure improvement.
+     - Fix: Define metrics, use unit tests against expected outputs, run A/B comparisons.
+
+Quick tips:
+- Use explicit role + instruction: "You are a [role]. Your task: ..."
+- Prefer constraints over preferences when correctness matters.
+- Use separators (---) or JSON blocks for strict parsing.
+- Limit temperature/increase tokens for deterministic needs.
+- Log prompts and outputs for iterative tuning.
+
+Minimal template to start:
+- Role: [assistant role]
+- Goal: [one-sentence objective]
+- Input: [data]
+- Output format: [exact template]
+- Examples: [2 examples]
+
+End of file.
