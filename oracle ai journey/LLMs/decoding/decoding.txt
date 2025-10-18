@@ -1,0 +1,66 @@
+Decoding notes for LLMs
+
+1. Goal
+    - Convert model output logits into discrete tokens (text).
+    - Balance between coherence, diversity, and correctness.
+
+2. Core concepts
+    - Logits -> softmax -> probabilities -> token selection.
+    - Temperature (T): scales logits. T < 1 sharpens (more deterministic), T > 1 flattens (more random).
+    - Log-probs: use log-space to avoid underflow and to combine scores.
+
+3. Deterministic strategies
+    - Greedy: pick highest-probability token each step.
+      - Pros: simple, fast, deterministic.
+      - Cons: can get stuck in loops, lacks diversity.
+    - Beam search: keep top-B partial hypotheses, expand and prune by summed (or normalized) scores.
+      - Pros: better global score, finds higher-prob sequences.
+      - Cons: expensive, may produce generic or repetitive outputs; needs length/coverage normalization.
+
+4. Stochastic strategies (sampling)
+    - Pure sampling: sample from full softmax distribution.
+    - Top-k sampling: restrict to k highest-prob tokens, renormalize, sample.
+      - k typical: 20-100.
+    - Top-p (nucleus) sampling: choose smallest set with cumulative prob ≥ p, renormalize, sample.
+      - p typical: 0.8-0.95.
+    - Temperature combined with top-k/top-p to control randomness.
+
+5. Penalties and adjustments
+    - Repetition penalty / anti-repetition: lower probability of tokens already generated.
+    - Length penalty: adjust scores to prefer longer/shorter outputs (often used in beam search).
+    - Presence/coverage penalty: penalize missing required content or reward covering diverse tokens.
+
+6. Constraints and control
+    - Forced tokens: force specific tokens at positions (useful for templates).
+    - Constrained decoding: only allow tokens satisfying constraints (e.g., grammar, vocabulary).
+    - Guided decoding: incorporate external score (e.g., semantic, safety) to re-rank logits.
+
+7. Practical tips
+    - For deterministic, coherent answers: greedy or low-temperature with beam search.
+    - For creative/generative text: temperature 0.7–1.2 with top-p 0.9 or top-k 40.
+    - For safe/concise responses: lower temperature (0.0–0.5) + top-p small.
+    - Monitor repetition and add penalties if loops occur.
+    - Normalize or length-penalize beams when output length varies.
+
+8. Evaluation and trade-offs
+    - Higher randomness increases diversity but reduces reproducibility and accuracy.
+    - Beam width increases search but can be computationally heavy and lead to bland outputs.
+    - Top-p is often preferred over top-k for adaptive support of long-tail tokens.
+
+9. Implementation notes
+    - Work in log-prob space when combining scores.
+    - Apply temperature by dividing logits: logits' = logits / T.
+    - For sampling, mask/filter logits before softmax to enforce top-k/top-p.
+    - Use efficient batching for beam search to reduce overhead.
+
+10. Debugging checklist
+    - If output is repetitive: try sampling or add repetition penalty.
+    - If output is irrelevant/noisy: lower temperature or increase context/prompt quality.
+    - If responses too generic: increase temperature or top-p/k for diversity.
+
+Quick parameter cheat-sheet
+    - Deterministic: temperature=0 / greedy or beam width=3–5.
+    - Balanced: temperature=0.7, top-p=0.9.
+    - Creative: temperature=1.0–1.2, top-k=40 or top-p=0.95.
+
+End.
